@@ -6,6 +6,7 @@ import { Api } from "./services/api";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import { Button } from "./components/Button/Button";
 import { Spinner } from "./components/Loader/Spinner";
+import Modal from "./components/Modal/Modal";
 
 export default class App extends Component {
   state = {
@@ -13,6 +14,7 @@ export default class App extends Component {
     images: [],
     page: 1,
     reqStatus: "idle", // idle, pending, resolved, rejected
+    selectedImage: null,
   };
 
   async componentDidUpdate(_, prevState) {
@@ -49,28 +51,41 @@ export default class App extends Component {
     this.setState({ imageName });
   };
 
+  // действие при выборе изображения в галерее, в стате передаем ссылку на большое изображение
+  handleSelectImage = (imageURL) => {
+    console.log("handleImageSelect");
+    this.setState({ selectedImage: imageURL });
+  };
+
   // действие по нажалию кнопки "LOAD MORE" с стайте увеличиваем значение page на 1
   handleLoadMoreClick = () => {
     this.setState({ page: this.state.page + 1 });
   };
 
+  // сброс state перед новым запросом
   resetState = () => {
     this.setState({
       imageName: null,
       images: [],
       page: 1,
       reqStatus: "idle",
+      modalIsOpen: false,
     });
   };
 
   render() {
-    const { reqStatus, images } = this.state;
+    const { reqStatus, images, selectedImage } = this.state;
 
     return (
       <div className="App">
         <SearchBar onSubmit={this.hendleFormSubmit} />
         {reqStatus === "pending" && <Spinner />}
-        <ImageGallery images={images} />
+        <ImageGallery
+          images={images}
+          // onClick={this.handleSelectImage}
+          onSelect={this.handleSelectImage}
+        />
+        {selectedImage && <Modal />}
         {images.length > 0 && <Button onClick={this.handleLoadMoreClick} />}
       </div>
     );
