@@ -1,4 +1,5 @@
 import React from "react";
+
 import PropTypes from "prop-types";
 import { HeaderBar, SearchForm } from "./SearchBar.styled";
 
@@ -10,7 +11,11 @@ const SearchBar = ({ onSubmit }) => {
           // не используем контролируемый компонент чтобы небыло лишних рендеров
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit(e.target.elements.imageName.value);
+            const value = e.target.elements.imageName.value.trim();
+            if (!value) {
+              return;
+            }
+            onSubmit(value);
             // console.log(e.target.elements.imageName.value);
           }}
         >

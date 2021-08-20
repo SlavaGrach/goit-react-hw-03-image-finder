@@ -2,13 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Item } from "./ImageGalleryItem.styled";
 
-const ImageGalleryItem = ({ id, src, alt }) => {
+const ImageGalleryItem = ({ src, alt, largeImageURL, onSelect }) => {
   return (
-    <>
-      <Item>
-        <img src={src} alt={alt} />
-      </Item>
-    </>
+    <Item
+      onClick={() => {
+        onSelect(largeImageURL);
+      }}
+    >
+      <img src={src} alt={alt} />
+    </Item>
   );
 };
 

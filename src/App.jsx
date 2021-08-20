@@ -1,7 +1,10 @@
 import "./App.css";
 import React, { Component } from "react";
-import SearchBar from "./components/Searchbar/SearchBar";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import SearchBar from "./components/Searchbar/SearchBar";
 import { Api } from "./services/api";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import { Button } from "./components/Button/Button";
@@ -19,7 +22,7 @@ export default class App extends Component {
 
   async componentDidUpdate(_, prevState) {
     //асиннхронный вызов
-    const { imageName, page } = this.state;
+    const { imageName, page, selectedImage } = this.state;
     if (prevState.imageName !== imageName || prevState.page !== page) {
       try {
         this.setState({ reqStatus: "pending" });
@@ -36,6 +39,7 @@ export default class App extends Component {
         this.setState({
           status: "rejected",
         });
+        toast.warning(`Not Found any images by query: ${imageName}`);
       }
       page > 1 && // если больше одной страницы, то скролим
         window.scrollTo({
@@ -43,6 +47,7 @@ export default class App extends Component {
           behavior: "smooth",
         });
     }
+    selectedImage && window.addEventListener("keydown", this.handlerPressKey);
   }
 
   // получаем имя изображения из формы и записываем в state
@@ -53,8 +58,20 @@ export default class App extends Component {
 
   // действие при выборе изображения в галерее, в стате передаем ссылку на большое изображение
   handleSelectImage = (imageURL) => {
-    console.log("handleImageSelect");
     this.setState({ selectedImage: imageURL });
+  };
+
+  handleCloseModal = (e) => {
+    if (e.target.nodeName === "IMG") {
+      return;
+    }
+    this.setState({ selectedImage: null });
+  };
+
+  handlerPressKey = (e) => {
+    if (e.key === "Escape") {
+      this.setState({ selectedImage: null });
+    }
   };
 
   // действие по нажалию кнопки "LOAD MORE" с стайте увеличиваем значение page на 1
@@ -85,8 +102,11 @@ export default class App extends Component {
           // onClick={this.handleSelectImage}
           onSelect={this.handleSelectImage}
         />
-        {selectedImage && <Modal />}
+        {selectedImage && (
+          <Modal closeModal={this.handleCloseModal} src={selectedImage} />
+        )}
         {images.length > 0 && <Button onClick={this.handleLoadMoreClick} />}
+        <ToastContainer />
       </div>
     );
   }

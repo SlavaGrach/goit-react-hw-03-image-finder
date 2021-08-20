@@ -8,7 +8,13 @@ export const Spinner = () => {
   return (
     <>
       <Container>
-        <Loader type="Oval" color="#3f51b5" height={100} width={100} />
+        <Loader
+          type="Oval"
+          color="#3f51b5"
+          height={100}
+          width={100}
+          timeout={2000}
+        />
       </Container>
     </>
   );

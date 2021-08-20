@@ -11,10 +11,11 @@ const ImageGallery = ({ images, onSelect }) => {
           const { id, webformatURL, tags, largeImageURL } = image;
           return (
             <ImageGalleryItem
-              onClick={() => onSelect(largeImageURL)}
+              onSelect={onSelect}
               key={id}
               src={webformatURL}
               alt={tags}
+              largeImageURL={largeImageURL}
             />
           );
         })}
